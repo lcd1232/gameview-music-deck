@@ -36,10 +36,6 @@ build-front: ## Build frontend
 	@echo "+ $@"
 	@pnpm run build
 
-build-back: ## Build backend
-	@echo "+ $@"
-	@make -C ./backend
-
 build: ## Build everything
 	@$(MAKE) build-front build-back
 
@@ -88,7 +84,6 @@ cleanup: ## Delete all generated files and folders
 	@rm -rf ./tmp
 	@rm -rf ./node_modules
 	@rm -rf ./.pnpm-store
-	@rm -rf ./backend/out
 
 uninstall-plugin: ## Uninstall plugin from steamdeck, restart Decky
 	@echo "+ $@"

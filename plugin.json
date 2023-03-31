@@ -1,7 +1,7 @@
 {
-  "name": "Example Plugin",
-  "author": "John Doe",
-  "flags": ["debug", "_root"],
+  "name": "GameView Music",
+  "author": "lcd1232",
+  "flags": ["debug"],
   "publish": {
     "tags": ["template", "root"],
     "description": "Decky example plugin.",
