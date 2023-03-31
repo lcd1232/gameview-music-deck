@@ -37,7 +37,7 @@ build-front: ## Build frontend
 	@pnpm run build
 
 build: ## Build everything
-	@$(MAKE) build-front build-back
+	@$(MAKE) build-front
 
 copy-ssh-key: ## Copy public ssh key to steamdeck
 	@echo "+ $@"
@@ -94,8 +94,3 @@ uninstall-plugin: ## Uninstall plugin from steamdeck, restart Decky
 docker-rebuild-image: ## Rebuild docker image
 	@echo "+ $@"
 	@docker compose build --pull
-
-docker-build: ## Build project inside docker container
-	@$(MAKE) build-back
-	@echo "+ $@"
-	@docker run --rm -i -v $(PWD):/plugin -v $(PWD)/tmp/out:/out ghcr.io/steamdeckhomebrew/builder:latest
