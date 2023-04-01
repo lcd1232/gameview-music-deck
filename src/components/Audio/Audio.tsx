@@ -1,5 +1,6 @@
 import { ServerAPI, ServerResponse } from "decky-frontend-lib";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { Database, getCache, keyDatabase } from "../../hooks/Cache";
 
 type YoutubeResult = {
   data: {
@@ -19,30 +20,34 @@ type APIResult = { body: string; status: number };
 export const AudioView = ({ appId, serverApi }: AudioViewProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const videoUrl = "https://www.youtube.com/watch?v=WoaciaBBCvc";
-
   useEffect(() => {
     const getData = async () => {
-      console.log(`get Audio data for ${appId}`);
-      const res: ServerResponse<{ body: string; status: number }> =
-        await serverApi.fetchNoCors<{ body: string; status: number }>(
-          `https://api.microlink.io/?url=${videoUrl}&audio`,
-          {
-            method: 'GET',
+      const database = await getCache<Database>(keyDatabase)
+      if (database && database.app_id[`${appId}`]) {
+        const videoUrl = database.app_id[`${appId}`].url;
+        console.log(`get Audio data for ${appId}`);
+        const res: ServerResponse<{ body: string; status: number }> =
+          await serverApi.fetchNoCors<{ body: string; status: number }>(
+            `https://api.microlink.io/?url=${videoUrl}&audio`,
+            {
+              method: 'GET',
+            }
+          );
+        const result = res.result as APIResult;
+        if (result.status === 200) {
+          const data: YoutubeResult = JSON.parse(result.body);
+          console.log(data.data.audio.url);
+          if (audioRef.current) {
+            audioRef.current.src = data.data.audio.url;
+            audioRef.current.pause();
+            audioRef.current.load();
+            audioRef.current.play();
           }
-        );
-      const result = res.result as APIResult;
-      if (result.status === 200) {
-        const data: YoutubeResult = JSON.parse(result.body);
-        console.log(data.data.audio.url);
-        if(audioRef.current){
-          audioRef.current.src = data.data.audio.url;
-          audioRef.current.pause();
-          audioRef.current.load();
-          audioRef.current.play();
+        } else {
+          console.error(result);
         }
       } else {
-        console.error(result);
+        console.debug(`No audio found for ${appId}`)
       }
     };
     if (appId) {
