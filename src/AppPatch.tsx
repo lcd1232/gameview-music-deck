@@ -54,7 +54,7 @@ export const patchAppPage = (serverApi: ServerAPI) => {
 							const component = (
 								<AudioView
 									appId={appId}
-									serverApi={serverApi}
+									serverAPI={serverApi}
 								/>
 							);
 
