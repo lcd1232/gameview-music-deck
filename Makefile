@@ -60,6 +60,8 @@ deploy-steamdeck: ## Deploy plugin build to steamdeck
 		--exclude='.idea' . \
 		--exclude='.env' . \
 		--exclude='Makefile' . \
+		--exclude='.pre-commit-config.yaml' . \
+		--exclude='setup.cfg' . \
  		./ $(DECK_USER)@$(DECK_HOST):$(DECK_HOME)/homebrew/plugins/$(PLUGIN_FOLDER)/
 	@ssh $(DECK_USER)@$(DECK_HOST) -p $(DECK_PORT) -i $(DECK_KEY) \
  		'chmod -v 755 $(DECK_HOME)/homebrew/plugins/'
