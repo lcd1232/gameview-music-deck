@@ -16,9 +16,13 @@ import urllib.request
 import decky_plugin
 
 config_url: str = 'https://raw.githubusercontent.com/lcd1232/gameview-music-data/main/v1/data.json'
+config: typing.Optional[dict] = None
 
 class Plugin:
     async def _load_config(self) -> dict:
+        global config
+        if config:
+            return config
         # file_path: str = os.path.join(decky_plugin.DECKY_PLUGIN_DIR, "config.json")
         file_path: str = os.path.join("/tmp", "config.json")
         headers: dict = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
@@ -34,27 +38,35 @@ class Plugin:
                     data = await response.text()
                     with open(file_path, 'w') as file:
                         file.write(data)
-        return json.loads(data)
+        config = json.loads(data)
+        return config
 
     async def _video_id_from_url(self, url: str) -> str:
+        """
+        Extracts the video id from a youtube url.
+        """
         query_params = urlparse(url).query
         return parse_qs(query_params)['v'][0]
 
     async def _video_id_exists(self, video_id: str) -> typing.Optional[str]:
+        """
+        Checks if the video id exists in the video folder.
+        """
         for format in ["mp4"]:
             file_path: str = os.path.join(decky_plugin.DECKY_PLUGIN_RUNTIME_DIR, f"{video_id}.{format}")
-            # decky_plugin.logger.debug(f"Looking for {file_path}")
             if os.path.exists(file_path):
                 return file_path
         return None
     
     async def _get_audio_url(self, url: str) -> typing.Tuple[str, str]:
+        """
+        Returns the audio url and the audio type.
+        """
         url: str = f"https://api.microlink.io/?url={url}&audio"
         headers: dict = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
         async with aiohttp.ClientSession(headers=headers) as session:
             async with session.get(url, ssl=helpers.get_ssl_context()) as response:
                 data = await response.json()
-                decky_plugin.logger.info(f"URL - {url}, data - {data}")
                 if data["status"] != "success":
                     raise Exception(f"unsuccess status: {data['status']}")
                 download_url: str = data["data"]["audio"]["url"]
@@ -62,7 +74,10 @@ class Plugin:
                 return download_url, audio_type
 
     def _download_video(self, url: str, video_id: str, audio_type: str) -> str:
-        decky_plugin.logger.info("download video started")
+        """
+        Downloads the video from the url and saves it to the video folder.
+        """
+        decky_plugin.logger.info(f"download video started {video_id}")
         headers: dict = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
         file_path: str = os.path.join(decky_plugin.DECKY_PLUGIN_RUNTIME_DIR, f"{video_id}.{audio_type}")
         request = urllib.request.Request(url, headers=headers)
@@ -79,7 +94,10 @@ class Plugin:
         return file_path
 
     async def get_sound_path(self, game_id: int, game_name: str) -> typing.Tuple[typing.Optional[str], bool]:
-        """Returns path to file where sound is located"""
+        """
+        Returns path to file where sound is located. If the file is not downloaded yet, it will be downloaded in the background.
+        Second return value is True if the file is already downloaded.
+        """
         config: dict = await self._load_config(self)
         decky_plugin.logger.info(config)
         if config["app_id"].get(str(game_id)):
@@ -95,6 +113,9 @@ class Plugin:
         return None
     
     async def get_sound_url(self, game_id: int, game_name: str) -> typing.Optional[str]:
+        """
+        Returns url to sound file.
+        """
         file_path, is_file = await self.get_sound_path(self, game_id, game_name)
         if not file_path:
             return None
@@ -104,16 +125,11 @@ class Plugin:
                 return f"data:audio/mpeg;base64,{encoded_string.decode()}"
         return file_path # file_path is url
 
-    # A normal method. It can be called from JavaScript using call_plugin_function("method_1", argument1, argument2)
-    async def add(self, left, right):
-        return left + right
-
-    # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):
         decky_plugin.logger.info(f"Current user {getpass.getuser()}")
         await self._load_config(self)
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
-        decky_plugin.logger.info("Goodbye World!")
-        pass
+        global config
+        config = None

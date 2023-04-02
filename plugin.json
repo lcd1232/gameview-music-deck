@@ -3,7 +3,7 @@
   "author": "lcd1232",
   "flags": ["debug"],
   "publish": {
-    "tags": ["template", "root"],
+    "tags": ["template"],
     "description": "Decky example plugin.",
     "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
   }
