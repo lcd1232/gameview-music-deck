@@ -6,7 +6,7 @@ import os
 import time
 import typing
 import urllib.request
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, quote, urlparse
 
 import aiohttp
 import decky_plugin
@@ -72,7 +72,10 @@ class Plugin:
         """
         Returns the audio url and the audio type.
         """
-        url: str = f"https://api.microlink.io/?url={url}&audio"
+        # Add timestamp to url to prevent caching outdated url.
+        url = f"{url}&_={int(time.time())}"
+        url = f"https://api.microlink.io/?url={quote(url)}&audio"
+        decky_plugin.logger.info(url)
         headers: dict = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
