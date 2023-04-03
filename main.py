@@ -1,6 +1,5 @@
 import asyncio
 import base64
-import getpass
 import json
 import os
 import time
@@ -24,8 +23,8 @@ class Plugin:
         global config
         if config:
             return config
-        # file_path: str = os.path.join(decky_plugin.DECKY_PLUGIN_DIR, "config.json")
-        file_path: str = os.path.join("/tmp", "config.json")
+        file_path: str = os.path.join(decky_plugin.DECKY_PLUGIN_DIR, "config.json")
+        # file_path: str = os.path.join("/tmp", "config.json")
         headers: dict = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
@@ -169,7 +168,6 @@ class Plugin:
         return file_path  # file_path is url
 
     async def _main(self):
-        decky_plugin.logger.info(f"Current user {getpass.getuser()}")
         await self._load_config(self)
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
