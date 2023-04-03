@@ -18,6 +18,7 @@ config_url: str = (
 config: typing.Optional[dict] = None
 audio_formats: typing.List[str] = ["mp4"]
 
+
 class Plugin:
     async def _load_config(self) -> dict:
         global config
@@ -143,7 +144,7 @@ class Plugin:
             )
             return download_url, False
         return None
-    
+
     async def clear_cache(self) -> None:
         """
         Clears cache of downloaded files.
