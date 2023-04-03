@@ -5,6 +5,6 @@
   "publish": {
     "tags": ["music", "audio"],
     "description": "Adds background music to the game page",
-    "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
+    "image": "https://opengraph.githubassets.com/1/lcd1232/gameview-music-deck"
   }
 }
