@@ -3,8 +3,8 @@
   "author": "lcd1232",
   "flags": ["debug"],
   "publish": {
-    "tags": ["template"],
-    "description": "Decky example plugin.",
+    "tags": ["music", "audio"],
+    "description": "Adds background music to game page",
     "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
   }
 }

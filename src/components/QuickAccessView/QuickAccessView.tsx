@@ -3,15 +3,20 @@ import {
   PanelSectionRow,
   ButtonItem,
   Router,
+  ServerAPI,
 } from 'decky-frontend-lib';
-import {
-  clearCache,
-} from '../../hooks/Cache';
 
-export const QuickAccessView = () => {
-  const handleClearCache = () => {
-      clearCache();
-      Router.CloseSideMenus();
+type QuickAccessView = {
+  serverAPI: ServerAPI;
+}
+
+export const QuickAccessView = ({ serverAPI }: QuickAccessView) => {
+  const handleClearCache = async () => {
+    let output = await serverAPI.callPluginMethod("clear_cache", {});
+    if (!output.success) {
+      return;
+    }
+    Router.CloseSideMenus();
   };
   return (
       <PanelSection>

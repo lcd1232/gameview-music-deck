@@ -16,7 +16,7 @@ config_url: str = (
     "https://raw.githubusercontent.com/lcd1232/gameview-music-data/main/v1/data.json"
 )
 config: typing.Optional[dict] = None
-
+audio_formats: typing.List[str] = ["mp4"]
 
 class Plugin:
     async def _load_config(self) -> dict:
@@ -60,7 +60,7 @@ class Plugin:
         """
         Checks if the video id exists in the video folder.
         """
-        for format in ["mp4"]:
+        for format in audio_formats:
             file_path: str = os.path.join(
                 decky_plugin.DECKY_PLUGIN_RUNTIME_DIR, f"{video_id}.{format}"
             )
@@ -143,6 +143,16 @@ class Plugin:
             )
             return download_url, False
         return None
+    
+    async def clear_cache(self) -> None:
+        """
+        Clears cache of downloaded files.
+        """
+        decky_plugin.logger.info("Clearing cache")
+        formats: typing.List[str] = [f".{format}" for format in audio_formats]
+        for file in os.listdir(decky_plugin.DECKY_PLUGIN_RUNTIME_DIR):
+            if any(file.endswith(format) for format in formats):
+                os.remove(os.path.join(decky_plugin.DECKY_PLUGIN_RUNTIME_DIR, file))
 
     async def get_sound_url(self, game_id: int, game_name: str) -> typing.Optional[str]:
         """
