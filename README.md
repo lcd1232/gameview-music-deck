@@ -2,14 +2,14 @@
 
 Reference example for using [decky-frontend-lib](https://github.com/SteamDeckHomebrew/decky-frontend-lib) in a [decky-loader](https://github.com/SteamDeckHomebrew/decky-loader) plugin.
 
-### **Please also refer to the [wiki](https://wiki.deckbrew.xyz/en/user-guide/home#plugin-development) for important information on plugin development and submissions/updates. currently documentation is split between this README and the wiki which is something we are hoping to rectify in the future.**  
+### **Please also refer to the [wiki](https://wiki.deckbrew.xyz/en/user-guide/home#plugin-development) for important information on plugin development and submissions/updates. currently documentation is split between this README and the wiki which is something we are hoping to rectify in the future.**
 
 ## Developers
 
 ### Dependencies
 
-This template relies on the user having `pnpm` installed on their system.  
-This can be downloaded from `npm` itself which is recommended. 
+This template relies on the user having `pnpm` installed on their system.
+This can be downloaded from `npm` itself which is recommended.
 
 #### Linux
 
@@ -25,7 +25,7 @@ sudo npm i -g pnpm
    2. ``pnpm run build``
    - These setup pnpm and build the frontend code for testing.
 3. Consult the [decky-frontend-lib](https://github.com/SteamDeckHomebrew/decky-frontend-lib) repository for ways to accomplish your tasks.
-   - Documentation and examples are still rough, 
+   - Documentation and examples are still rough,
    - While decky-loader primarily targets Steam Deck hardware so keep this in mind when developing your plugin.
 4. If you want an all encompassing demonstration of decky-frontend-lib's capabilities check out [decky-playground](https://github.com/SteamDeckHomebrew/decky-playground). It shows off almost all of decky-frontend-lib's features.
 
@@ -45,7 +45,7 @@ If you are developing with a backend for a plugin and would like to submit it to
 When building your plugin, the source code will be built and any finished binary or binaries will be output to ``backend/out`` (which is created during CI.)
 If your buildscript, makefile or any other build method does not place the binary files in the ``backend/out`` directory they will not be properly picked up during CI and your plugin will not have the required binaries included for distribution.
 
-Example:  
+Example:
 In our makefile used to demonstrate the CI process of building and distributing a plugin backend, note that the makefile explicitly creates the `out` folder (``backend/out``) and then compiles the binary into that folder. Here's the relevant snippet.
 
 ```make
@@ -56,7 +56,7 @@ hello:
 
 The CI does create the `out` folder itself but we recommend creating it yourself if possible during your build process to ensure the build process goes smoothly.
 
-The out folder is not sent to the final plugin, but is then put into a ``bin`` folder which is found at the root of the plugin's directory.  
+The out folder is not sent to the final plugin, but is then put into a ``bin`` folder which is found at the root of the plugin's directory.
 More information on the bin folder can be found below in the distribution section below.
 
 ### Distribution
@@ -79,7 +79,7 @@ pluginname-v1.0.0.zip (version number is optional but recommended for users sake
    |  dist/ <directory> [required]
    |      |
    |      index.js [required]
-   | 
+   |
    package.json [required]
    plugin.json [required]
    main.py {required if you are using the python backend of decky-loader: serverAPI}

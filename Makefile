@@ -36,12 +36,8 @@ build-front: ## Build frontend
 	@echo "+ $@"
 	@pnpm run build
 
-build-back: ## Build backend
-	@echo "+ $@"
-	@make -C ./backend
-
 build: ## Build everything
-	@$(MAKE) build-front build-back
+	@$(MAKE) build-front
 
 copy-ssh-key: ## Copy public ssh key to steamdeck
 	@echo "+ $@"
@@ -64,6 +60,8 @@ deploy-steamdeck: ## Deploy plugin build to steamdeck
 		--exclude='.idea' . \
 		--exclude='.env' . \
 		--exclude='Makefile' . \
+		--exclude='.pre-commit-config.yaml' . \
+		--exclude='setup.cfg' . \
  		./ $(DECK_USER)@$(DECK_HOST):$(DECK_HOME)/homebrew/plugins/$(PLUGIN_FOLDER)/
 	@ssh $(DECK_USER)@$(DECK_HOST) -p $(DECK_PORT) -i $(DECK_KEY) \
  		'chmod -v 755 $(DECK_HOME)/homebrew/plugins/'
@@ -88,7 +86,6 @@ cleanup: ## Delete all generated files and folders
 	@rm -rf ./tmp
 	@rm -rf ./node_modules
 	@rm -rf ./.pnpm-store
-	@rm -rf ./backend/out
 
 uninstall-plugin: ## Uninstall plugin from steamdeck, restart Decky
 	@echo "+ $@"
@@ -99,8 +96,3 @@ uninstall-plugin: ## Uninstall plugin from steamdeck, restart Decky
 docker-rebuild-image: ## Rebuild docker image
 	@echo "+ $@"
 	@docker compose build --pull
-
-docker-build: ## Build project inside docker container
-	@$(MAKE) build-back
-	@echo "+ $@"
-	@docker run --rm -i -v $(PWD):/plugin -v $(PWD)/tmp/out:/out ghcr.io/steamdeckhomebrew/builder:latest
