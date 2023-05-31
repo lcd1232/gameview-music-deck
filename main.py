@@ -172,7 +172,7 @@ class Plugin:
     async def _main(self):
         while True:
             await self._load_config(self, force_check=True)
-            await asyncio.sleep(60*60)
+            await asyncio.sleep(60 * 60)
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
