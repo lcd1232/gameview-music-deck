@@ -19,11 +19,14 @@ audio_formats: typing.List[str] = ["mp4"]
 
 
 class Plugin:
-    async def _load_config(self) -> dict:
+    async def _load_config(self, force_check: bool = False) -> dict:
         global config
-        if config:
-            return config
-        file_path: str = os.path.join(decky_plugin.DECKY_PLUGIN_SETTINGS_DIR, "config.json")
+        if not force_check:
+            if config:
+                return config
+        file_path: str = os.path.join(
+            decky_plugin.DECKY_PLUGIN_SETTINGS_DIR, "config.json"
+        )
         headers: dict = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
@@ -167,7 +170,9 @@ class Plugin:
         return file_path  # file_path is url
 
     async def _main(self):
-        await self._load_config(self)
+        while True:
+            await self._load_config(self, force_check=True)
+            await asyncio.sleep(60 * 60)
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
