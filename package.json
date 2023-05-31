@@ -1,6 +1,6 @@
 {
   "name": "gameview-music-deck",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Adds background music to the game page",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
